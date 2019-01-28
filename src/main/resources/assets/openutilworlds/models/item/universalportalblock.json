@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+
+  "textures": {
+    "particle": "minecraft:blocks/obsidian",
+    "top": "minecraft:blocks/iron_block",
+    "west":"minecraft:blocks/obsidian",
+    "east":"minecraft:blocks/obsidian",
+    "north":"minecraft:blocks/obsidian",
+    "down":"minecraft:blocks/obsidian",
+    "south":"minecraft:blocks/obsidian"
+  }
+}
