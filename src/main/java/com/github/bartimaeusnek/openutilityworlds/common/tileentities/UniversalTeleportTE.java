@@ -1,8 +1,6 @@
 package com.github.bartimaeusnek.openutilityworlds.common.tileentities;
 
-import com.github.bartimaeusnek.openutilityworlds.common.world.dimension.DimensionTypeManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
@@ -15,6 +13,7 @@ public class UniversalTeleportTE extends TileEntity implements ITeleporter {
     public UniversalTeleportTE() {
 
     }
+
     @Override
     public void placeEntity(World world, Entity entity, float yaw) {
         if (world.isRemote)
@@ -23,9 +22,9 @@ public class UniversalTeleportTE extends TileEntity implements ITeleporter {
         int id = this.getTileData().getInteger("DIM_ID");
         int[] pos = this.getTileData().getIntArray("RETURNPOS");
         //DimensionManager.initDimension(id);
-        Pteleporter tteleporter=new Pteleporter(DimensionManager.getWorld(id,true),pos);
-        tteleporter.placeEntity(world,entity,yaw);
-        tteleporter=null;
+        Pteleporter tteleporter = new Pteleporter(DimensionManager.getWorld(id, true), pos);
+        tteleporter.placeEntity(world, entity, yaw);
+        tteleporter = null;
     }
 
     @Override
@@ -33,30 +32,29 @@ public class UniversalTeleportTE extends TileEntity implements ITeleporter {
         return false;
     }
 
-    class Pteleporter extends Teleporter{
+    class Pteleporter extends Teleporter {
         int[] pos;
 
         public Pteleporter(WorldServer worldIn, int[] pos) {
             super(worldIn);
-            this.pos=pos;
+            this.pos = pos;
         }
 
         @Override
-        public boolean makePortal(Entity par1Entity){
+        public boolean makePortal(Entity par1Entity) {
             return true;
         }
 
         @Override
         public void placeInPortal(Entity entityIn, float rotationYaw) {
-            if (pos.length==3){
+            if (pos.length == 3) {
 //                if (this.world == null)
 //                    DimensionManager.initDimension(world.provider.getDimension());
-                entityIn.setPosition(pos[0]+1,pos[1],pos[2]);
-            }
-            else{
+                entityIn.setPositionAndUpdate(pos[0] + 1, pos[1], pos[2]);
+            } else {
 //                if (this.world == null)
 //                    DimensionManager.initDimension(world.provider.getDimension());
-                entityIn.setPosition(world.getSpawnPoint().getX()+1,world.getSpawnPoint().getY(),world.getSpawnPoint().getZ());
+                entityIn.setPositionAndUpdate(world.getSpawnPoint().getX() + 1, world.getSpawnPoint().getY(), world.getSpawnPoint().getZ());
             }
         }
     }

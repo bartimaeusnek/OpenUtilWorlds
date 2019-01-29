@@ -42,23 +42,23 @@ import static com.github.bartimaeusnek.openutilityworlds.common.world.dimension.
 
 public class UniversalPortalBlock extends BlockContainer {
 
+    final static AxisAlignedBB box = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.875D, 1.0D);
+
     public UniversalPortalBlock() {
-        super(Material.IRON,MapColor.PURPLE);
+        super(Material.IRON, MapColor.PURPLE);
         this.setCreativeTab(OUW.tab);
-        this.blockResistance=100f;
-        this.blockHardness=100f;
+        this.blockResistance = 100f;
+        this.blockHardness = 100f;
         this.setTranslationKey("universalportalblock");
         this.setSoundType(SoundType.METAL);
-        this.setRegistryName(OUW.MODID,"universalportalblock");
-        //this.setDefaultState(this.createBlockState().getBaseState().withProperty(PROPERTY_ENUM, DimensionTypeManager.PortalTypes.RETURN));
+        this.setRegistryName(OUW.MODID, "universalportalblock");
+        this.setDefaultState(this.createBlockState().getBaseState().withProperty(PROPERTY_ENUM, DimensionTypeManager.PortalTypes.RETURN));
     }
 
     @Override
     public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
-
-    final static AxisAlignedBB box = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.875D, 1.0D);
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
@@ -73,19 +73,13 @@ public class UniversalPortalBlock extends BlockContainer {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos){
+    public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World worldIn, BlockPos pos) {
         return box;
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(IBlockState state)
-    {
+    public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
-    }
-
-    @Override
-    public BlockStateContainer getBlockState() {
-        return this.blockState;
     }
 
     @Override
@@ -96,7 +90,7 @@ public class UniversalPortalBlock extends BlockContainer {
 
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
-        return createBlockState().getBaseState().withProperty(DimensionTypeManager.PROPERTY_ENUM, DimensionTypeManager.PortalTypes.getTypeFromMeta(meta));
+        return this.blockState.getBaseState().withProperty(DimensionTypeManager.PROPERTY_ENUM, DimensionTypeManager.PortalTypes.getTypeFromMeta(meta));
     }
 
     @Override
@@ -109,12 +103,12 @@ public class UniversalPortalBlock extends BlockContainer {
         return this.getStateFromMeta(meta);
     }
 
-    protected BlockStateContainer createBlockState(){
+    protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, PROPERTY_ENUM);
     }
 
-    protected DimensionTypeManager getPortalType(){
-        return DimensionTypeManager.VOID;
+    protected DimensionTypeManager getPortalType(int meta) {
+        return DimensionTypeManager.getDimTypeFromMeta(meta);
     }
 
     @Override
@@ -128,15 +122,15 @@ public class UniversalPortalBlock extends BlockContainer {
         boolean newDim = teData.getBoolean("NEW_DIM");
         int toPort = teData.getInteger("DIM_ID");
         if (newDim) {
-            toPort=DimensionTypeManager.registerAndHotloadNewDim(getPortalType());
-            teData.setBoolean("NEW_DIM",false);
-            teData.setInteger("DIM_ID",toPort);
+            toPort = DimensionTypeManager.registerAndHotloadNewDim(getPortalType(getMetaFromState(worldIn.getBlockState(pos))));
+            teData.setBoolean("NEW_DIM", false);
+            teData.setInteger("DIM_ID", toPort);
         }
         if (worldIn.provider.getDimension() != toPort) {
             World worldOut = DimensionManager.getWorld(toPort, true);
             if (worldOut == null) {
                 if (!DimensionManager.isDimensionRegistered(toPort))
-                    DimensionTypeManager.registerAndHotloadNewDim(getPortalType(),toPort);
+                    DimensionTypeManager.registerAndHotloadNewDim(getPortalType(getMetaFromState(worldIn.getBlockState(pos))), toPort);
                 DimensionManager.initDimension(toPort);
                 worldOut = DimensionManager.getWorld(toPort, true);
             }
@@ -183,7 +177,7 @@ public class UniversalPortalBlock extends BlockContainer {
                 tagCompound.setBoolean("ReturnHasBeenSet", true);
                 teData.setBoolean("ReturnHasBeenSet", true);
                 teData.setIntArray("RETURNPOS", new int[]{toSpawn.getX(), toSpawn.getY(), toSpawn.getZ()});
-                teData.setString("DIMSTRING",playerIn.getName()+"'s "+this.getPortalType().getDimensionType().getName()+" Dim");
+                teData.setString("DIMSTRING", playerIn.getName() + "'s " + getPortalType(getMetaFromState(worldIn.getBlockState(pos))).getDimensionType().getName() + " Dim");
                 worldOut.setBlockState(toSpawn, ItemRegistry.portalBlock.getBlockState().getBaseState());
                 UniversalPortalItemBlockItem.setBlockNbt(worldOut, null, toSpawn, stackOut);
                 initial.markDirty();
@@ -201,12 +195,15 @@ public class UniversalPortalBlock extends BlockContainer {
     @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
         if (itemIn.equals(OUW.tab))
-            for (DimensionTypeManager.PortalTypes Type : DimensionTypeManager.PortalTypes.values()){
+            for (DimensionTypeManager.PortalTypes Type : DimensionTypeManager.PortalTypes.values()) {
                 ItemStack teleporter = new ItemStack(this, 1, Type.getMeta());
                 NBTTagCompound blocktag = teleporter.getTagCompound();
                 if (blocktag == null)
-                    blocktag=new NBTTagCompound();
-                blocktag.setBoolean("NEW_DIM",true);
+                    blocktag = new NBTTagCompound();
+                if (Type.getMeta() != DimensionTypeManager.PortalTypes.SHARED.getMeta())
+                    blocktag.setBoolean("NEW_DIM", true);
+                else
+                    blocktag.setInteger("DIM_ID", OUW.sharedVoid);
                 teleporter.setTagCompound(blocktag);
                 items.add(teleporter);
             }

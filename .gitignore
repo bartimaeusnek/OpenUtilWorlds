@@ -13,6 +13,7 @@ classes
 *.ipr
 *.iws
 *.iml
+*.txt
 .idea
 
 # gradle

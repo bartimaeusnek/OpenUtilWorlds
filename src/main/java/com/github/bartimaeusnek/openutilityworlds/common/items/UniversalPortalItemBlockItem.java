@@ -1,7 +1,6 @@
 package com.github.bartimaeusnek.openutilityworlds.common.items;
 
 import com.github.bartimaeusnek.openutilityworlds.OUW;
-import com.github.bartimaeusnek.openutilityworlds.common.blocks.UniversalPortalBlock;
 import com.github.bartimaeusnek.openutilityworlds.loader.ItemRegistry;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
@@ -17,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -27,26 +27,21 @@ public class UniversalPortalItemBlockItem extends ItemBlock {
 
     public UniversalPortalItemBlockItem() {
         super(ItemRegistry.portalBlock);
-        this.maxStackSize=1;
-        this.hasSubtypes=true;
+        this.maxStackSize = 1;
+        this.hasSubtypes = true;
         this.setCreativeTab(OUW.tab);
-        this.setRegistryName(OUW.MODID,"universalportalitemblockitem");
+        this.setRegistryName(OUW.MODID, "universalportalitemblockitem");
     }
 
-    public int getMetadata(int damage)
-    {
-        return damage%15;
-    }
-
-    public static boolean setBlockNbt(World world, @Nullable EntityPlayer entityPlayer, BlockPos pos, ItemStack stack){
+    public static boolean setBlockNbt(World world, @Nullable EntityPlayer entityPlayer, BlockPos pos, ItemStack stack) {
         if (world.isRemote)
             return false;
 
         IBlockState state = world.getBlockState(pos);
-        if (state.getBlock().equals(ItemRegistry.portalBlock)){
+        if (state.getBlock().equals(ItemRegistry.portalBlock)) {
             MinecraftServer minecraftserver = world.getMinecraftServer();
 
-            if (minecraftserver != null){
+            if (minecraftserver != null) {
                 NBTTagCompound tag = stack.getTagCompound();
                 if (tag == null)
                     return false;
@@ -57,16 +52,20 @@ public class UniversalPortalItemBlockItem extends ItemBlock {
                 NBTTagCompound blocktag = te.getTileData();
                 if (!newWorld) {
                     int id = tag.getInteger("DIM_ID");
-                    blocktag.setInteger("DIM_ID",id);
+                    blocktag.setInteger("DIM_ID", id);
                 } else
-                    blocktag.setBoolean("NEW_DIM",true);
-                blocktag.setBoolean("ReturnHasBeenSet",tag.getBoolean("ReturnHasBeenSet"));
-                blocktag.setIntArray("RETURNPOS",tag.getIntArray("RETURNPOS"));
+                    blocktag.setBoolean("NEW_DIM", true);
+                blocktag.setBoolean("ReturnHasBeenSet", tag.getBoolean("ReturnHasBeenSet"));
+                blocktag.setIntArray("RETURNPOS", tag.getIntArray("RETURNPOS"));
                 return true;
             }
         }
         return false;
 
+    }
+
+    public int getMetadata(int damage) {
+        return damage % 15;
     }
 
     @Override
@@ -78,11 +77,14 @@ public class UniversalPortalItemBlockItem extends ItemBlock {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        if (stack.getTagCompound() == null)
-            return I18n.format("ouw.portalblock.broken");
-        NBTTagCompound tag = stack.getTagCompound();
-        final DimensionType T = DimensionManager.getProviderType(tag.getInteger("DIM_ID"));
-        return I18n.format("ouw.portalblock.portalto") +" "+ (tag.getBoolean("NEW_DIM") ? I18n.format("ouw.PrivateVoid") : tag.getInteger("DIM_ID") == OUW.sharedVoid ? I18n.format("SharedVoid") : I18n.format(T.getName()));
+        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+            if (stack.getTagCompound() == null)
+                return I18n.format("ouw.portalblock.broken");
+            NBTTagCompound tag = stack.getTagCompound();
+            final DimensionType T = DimensionManager.getProviderType(tag.getInteger("DIM_ID"));
+            return I18n.format("ouw.portalblock.portalto") + " " + (tag.getBoolean("NEW_DIM") ? I18n.format("ouw.PrivateVoid") : tag.getInteger("DIM_ID") == OUW.sharedVoid ? I18n.format("SharedVoid") : I18n.format(T.getName()));
+        }
+        return stack.toString();
     }
 
     @SideOnly(Side.CLIENT)
@@ -93,7 +95,7 @@ public class UniversalPortalItemBlockItem extends ItemBlock {
             return;
         }
         final DimensionType T = DimensionManager.getProviderType(tag.getInteger("DIM_ID"));
-        tooltip.add(I18n.format("ouw.portalblock.portalto") +" "+ (tag.getBoolean("NEW_DIM") ? I18n.format("ouw.PrivateVoid") : tag.getInteger("DIM_ID") == OUW.sharedVoid ? I18n.format("SharedVoid") : I18n.format(T.getName())));
+        tooltip.add(I18n.format("ouw.portalblock.portalto") + " " + (tag.getBoolean("NEW_DIM") ? I18n.format("ouw.PrivateVoid") : tag.getInteger("DIM_ID") == OUW.sharedVoid ? I18n.format("SharedVoid") : I18n.format(T.getName())));
         super.addInformation(stack, worldIn, tooltip, flagIn);
         this.block.addInformation(stack, worldIn, tooltip, flagIn);
     }

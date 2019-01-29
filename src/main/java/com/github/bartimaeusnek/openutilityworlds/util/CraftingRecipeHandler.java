@@ -47,9 +47,9 @@ import net.minecraftforge.registries.GameData;
 
 /**
  * This class contains a bunch of helper methods for adding recipes in code in minecraft 1.12
- *
+ * <p>
  * Feel free to use this code for your projects.
- *
+ * <p>
  * Also please, please point out places where this can be improved.
  */
 public class CraftingRecipeHandler {
@@ -85,7 +85,7 @@ public class CraftingRecipeHandler {
      * Adds a shapeless ore recipe
      *
      * @param output The stack that should be produced
-     * @param input Input ingredients
+     * @param input  Input ingredients
      */
     public static void addShapelessOreRecipe(ItemStack output, Object... input) {
         ResourceLocation location = getNameForRecipe(output);
@@ -98,7 +98,7 @@ public class CraftingRecipeHandler {
      * Adds a basic shapeless recipe
      *
      * @param output The stack that should be produced
-     * @param input Input ingredients
+     * @param input  Input ingredients
      */
     public static void addShapelessRecipe(ItemStack output, Object... input) {
         ResourceLocation location = getNameForRecipe(output);

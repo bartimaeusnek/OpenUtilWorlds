@@ -18,26 +18,26 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class StupidNewRegisterer {
 
     @SubscribeEvent
-    public static void onBlockRegister(RegistryEvent.Register<Block> onBlockRegister){
+    public static void onBlockRegister(RegistryEvent.Register<Block> onBlockRegister) {
         onBlockRegister.getRegistry().registerAll(ItemRegistry.blocks.toArray(new Block[0]));
     }
 
     @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> event){
+    public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(ItemRegistry.items.toArray(new Item[0]));
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public static void onModelRegister(ModelRegistryEvent event){
-        for (Item I : ItemRegistry.items){
+    public static void onModelRegister(ModelRegistryEvent event) {
+        for (Item I : ItemRegistry.items) {
             for (DimensionTypeManager.PortalTypes i : DimensionTypeManager.PortalTypes.values()) {
-                 ModelLoader.setCustomModelResourceLocation(I, i.getMeta(), new ModelResourceLocation(I.getRegistryName().toString(),"inventory"));
+                ModelLoader.setCustomModelResourceLocation(I, i.getMeta(), new ModelResourceLocation(I.getRegistryName().toString(), "inventory"));
             }
         }
-        for (Block B : ItemRegistry.blocks){
+        for (Block B : ItemRegistry.blocks) {
             for (DimensionTypeManager.PortalTypes i : DimensionTypeManager.PortalTypes.values()) {
-                 ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(B), i.getMeta(), new ModelResourceLocation(B.getRegistryName().toString(),"type="+i.getName()));
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(B), i.getMeta(), new ModelResourceLocation(B.getRegistryName().toString(), "type=" + i.getName()));
             }
         }
     }

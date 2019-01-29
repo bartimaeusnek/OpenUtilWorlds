@@ -1,8 +1,9 @@
 package com.github.bartimaeusnek.openutilityworlds.common.world.chunkgenerator;
 
 import com.github.bartimaeusnek.openutilityworlds.common.config.ConfigHandler;
+import com.github.bartimaeusnek.openutilityworlds.common.world.chunkgenerator.noise.UniversalNoise;
+import com.github.bartimaeusnek.openutilityworlds.util.XSTR;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -13,13 +14,19 @@ import net.minecraft.world.gen.IChunkGenerator;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class UniversalChunkGenerator implements IChunkGenerator {
+public abstract class UniversalChunkGenerator implements IChunkGenerator {
 
-    private final World world;
+    protected static final byte worldgenOffset = 8;
+    protected final XSTR random;
+    protected final World world;
+    protected final UniversalNoise universalNoise;
 
     public UniversalChunkGenerator(World world) {
         this.world = world;
+        random = new XSTR(world.getSeed());
+        universalNoise = new UniversalNoise(world.getSeed());
     }
+
 
     @Override
     public Chunk generateChunk(int x, int z) {
@@ -27,7 +34,7 @@ public class UniversalChunkGenerator implements IChunkGenerator {
         Chunk chunk = new Chunk(this.world, chunkprimer, x, z);
         chunk.generateSkylightMap();
         for (int i = 0; i < chunk.getBiomeArray().length; ++i) {
-            chunk.getBiomeArray()[i] = (byte) Biome.getIdForBiome(Biome.getBiome(1, Biomes.PLAINS));
+            chunk.getBiomeArray()[i] = (byte) 1;
         }
         chunk.generateSkylightMap();
         return chunk;

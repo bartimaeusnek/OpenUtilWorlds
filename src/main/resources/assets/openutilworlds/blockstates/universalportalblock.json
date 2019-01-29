@@ -10,10 +10,14 @@
   },
   "variants": {
     "inventory": [
-      {}
+      {
+
+      }
     ],
     "normal": [
-      {}
+      {
+
+      }
     ],
     "type":{
         "return": 
@@ -28,7 +32,7 @@
         {
           "textures": {
             "side": "minecraft:blocks/obsidian",
-            "top": "minecraft:blocks/gold_block"
+            "top": "minecraft:blocks/lapis_block"
           }
         }
       ,
@@ -44,7 +48,7 @@
         {
           "textures": {
             "side": "minecraft:blocks/obsidian",
-            "top": "minecraft:blocks/gold_block"
+            "top": "minecraft:blocks/emerald_block"
           }
         }
       ,
@@ -54,7 +58,21 @@
             "side": "minecraft:blocks/obsidian",
             "top": "minecraft:blocks/redstone_block"
           }
+        },
+      "dunes":
+      {
+        "textures": {
+          "side": "minecraft:blocks/obsidian",
+          "top": "minecraft:blocks/sandstone_top"
         }
+      },
+      "winter":
+      {
+        "textures": {
+          "side": "minecraft:blocks/obsidian",
+          "top": "minecraft:blocks/snow"
+        }
+      }
     }
   }
 }

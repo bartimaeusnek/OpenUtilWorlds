@@ -1,7 +1,6 @@
 package com.github.bartimaeusnek.openutilityworlds.common.world.provider;
 
 import com.github.bartimaeusnek.openutilityworlds.common.config.ConfigHandler;
-import com.github.bartimaeusnek.openutilityworlds.common.world.chunkgenerator.UniversalChunkGenerator;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.IChunkGenerator;
@@ -10,25 +9,23 @@ import javax.annotation.Nullable;
 
 public abstract class UniversalWorldProvider extends WorldProvider {
 
-    public UniversalWorldProvider(){
+    public UniversalWorldProvider() {
         this.nether = false;
         this.doesWaterVaporize = false;
         this.hasSkyLight = true;
     }
+
     @Override
     public boolean canRespawnHere() {
         return ConfigHandler.canRespawn;
     }
 
-    @Override
-    public IChunkGenerator createChunkGenerator() {
-        return new UniversalChunkGenerator(this.world);
-    }
+    abstract public IChunkGenerator createChunkGenerator();
 
     @Nullable
     @Override
     public String getSaveFolder() {
-        return "OUW_UNIVERSAL_DIM_"+this.getDimension();
+        return "OUW_UNIVERSAL_DIM_" + this.getDimension();
     }
 
     @Override
