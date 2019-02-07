@@ -1,0 +1,78 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "side": "blocks/obsidian",
+      "top": "blocks/iron_block"
+    },
+      "model": "bettervoidworlds:universalportalblock",
+      "uvlock": true
+  },
+  "variants": {
+    "inventory": [
+      {
+
+      }
+    ],
+    "normal": [
+      {
+
+      }
+    ],
+    "type":{
+        "return": 
+        {
+          "textures": {
+            "side": "minecraft:blocks/obsidian",
+            "top": "minecraft:blocks/iron_block"
+          }
+        }
+      ,
+      "mining": 
+        {
+          "textures": {
+            "side": "minecraft:blocks/obsidian",
+            "top": "minecraft:blocks/lapis_block"
+          }
+        }
+      ,
+      "shared": 
+        {
+          "textures": {
+            "side": "minecraft:blocks/obsidian",
+            "top": "minecraft:blocks/gold_block"
+          }
+        }
+      ,
+      "garden": 
+        {
+          "textures": {
+            "side": "minecraft:blocks/obsidian",
+            "top": "minecraft:blocks/emerald_block"
+          }
+        }
+      ,
+      "void": 
+        {
+          "textures": {
+            "side": "minecraft:blocks/obsidian",
+            "top": "minecraft:blocks/redstone_block"
+          }
+        },
+      "dunes":
+      {
+        "textures": {
+          "side": "minecraft:blocks/obsidian",
+          "top": "minecraft:blocks/sandstone_top"
+        }
+      },
+      "winter":
+      {
+        "textures": {
+          "side": "minecraft:blocks/obsidian",
+          "top": "minecraft:blocks/snow"
+        }
+      }
+    }
+  }
+}
