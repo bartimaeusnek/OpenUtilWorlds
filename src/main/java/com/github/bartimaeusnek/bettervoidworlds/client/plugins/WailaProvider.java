@@ -32,10 +32,10 @@ public class WailaProvider implements IWailaPlugin {
         @Override
         public List<String> getWailaBody(ItemStack itemStack, List<String> tooltip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
             tooltip.addAll(Arrays.asList(
-                    "Portal to " + (accessor.getNBTData().getInteger("DIM_ID") == OUW.sharedVoid ? I18n.format("SharedVoid") : accessor.getNBTData().getString("DIMSTRING").isEmpty() ? DimensionManager.getProviderType(accessor.getNBTData().getInteger("DIM_ID")).getName() : accessor.getNBTData().getString("DIMSTRING")),
-                    accessor.getNBTData().getBoolean("NEW_DIM") ? "Creates a new Personal Dim" : "",
-                    !accessor.getNBTData().getBoolean("ReturnHasBeenSet") ? "Not activated yet" : "Has been activated",
-                    "Teleports to " + (!Arrays.equals(new int[]{accessor.getPosition().getX(), accessor.getPosition().getY(), accessor.getPosition().getZ()}, accessor.getNBTData().getIntArray("RETURNPOS")) && accessor.getNBTData().getIntArray("RETURNPOS").length == 3 ? new BlockPos(accessor.getNBTData().getIntArray("RETURNPOS")[0], accessor.getNBTData().getIntArray("RETURNPOS")[1], accessor.getNBTData().getIntArray("RETURNPOS")[2]).toString() : accessor.getPosition().toString())
+                    I18n.format("ouw.waila.pt")+ " " + (accessor.getNBTData().getInteger("DIM_ID") == OUW.sharedVoid ? I18n.format("SharedVoid") : accessor.getNBTData().getString("DIMSTRING").isEmpty() ? DimensionManager.getProviderType(accessor.getNBTData().getInteger("DIM_ID")).getName() : accessor.getNBTData().getString("DIMSTRING")),
+                    accessor.getNBTData().getBoolean("NEW_DIM") ?  I18n.format("ouw.waila.canpvd") : "",
+                    I18n.format(!accessor.getNBTData().getBoolean("ReturnHasBeenSet") ? "ouw.waila.nay" : "ouw.waila.hba"),
+                    I18n.format("ouw.waila.tt")+ " " + (!Arrays.equals(new int[]{accessor.getPosition().getX(), accessor.getPosition().getY(), accessor.getPosition().getZ()}, accessor.getNBTData().getIntArray("RETURNPOS")) && accessor.getNBTData().getIntArray("RETURNPOS").length == 3 ? new BlockPos(accessor.getNBTData().getIntArray("RETURNPOS")[0], accessor.getNBTData().getIntArray("RETURNPOS")[1], accessor.getNBTData().getIntArray("RETURNPOS")[2]).toString() : accessor.getPosition().toString())
             ));
             return tooltip;
         }

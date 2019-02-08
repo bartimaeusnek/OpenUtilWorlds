@@ -12,6 +12,7 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -223,7 +224,8 @@ public class UniversalPortalBlock extends BlockContainer {
                 else
                     blocktag.setInteger("DIM_ID", OUW.sharedVoid);
                 teleporter.setTagCompound(blocktag);
-                teleporter.setStackDisplayName("Portal to a " + Type.getName() + " Dimension");
+                if (FMLCommonHandler.instance().getSide().isClient())
+                    teleporter.setStackDisplayName(I18n.format("ouw.block.pta") + " " + Type.getName() + " "+I18n.format("ouw.block.dim"));
                 items.add(teleporter);
             }
     }
