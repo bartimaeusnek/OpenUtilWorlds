@@ -88,6 +88,9 @@ public class UniversalPortalBlock extends BlockContainer {
         return state.getValue(PROPERTY_ENUM).getMeta();
     }
 
+    public static int getMetaFromStateStatic(IBlockState state) {
+        return state.getValue(PROPERTY_ENUM).getMeta();
+    }
 
     @Deprecated
     public IBlockState getStateFromMeta(int meta) {
@@ -108,7 +111,7 @@ public class UniversalPortalBlock extends BlockContainer {
         return new BlockStateContainer(this, PROPERTY_ENUM);
     }
 
-    protected DimensionTypeManager getPortalType(int meta) {
+    protected static DimensionTypeManager getPortalType(int meta) {
         return DimensionTypeManager.getDimTypeFromMeta(meta);
     }
 

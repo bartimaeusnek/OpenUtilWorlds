@@ -1,6 +1,9 @@
 package com.github.bartimaeusnek.bettervoidworlds.common.items;
 
 import com.github.bartimaeusnek.bettervoidworlds.OUW;
+import com.github.bartimaeusnek.bettervoidworlds.common.blocks.UniversalPortalBlock;
+import com.github.bartimaeusnek.bettervoidworlds.common.config.ConfigHandler;
+import com.github.bartimaeusnek.bettervoidworlds.common.tileentities.UniversalTeleportTE;
 import com.github.bartimaeusnek.bettervoidworlds.common.world.dimension.DimensionTypeManager;
 import com.github.bartimaeusnek.bettervoidworlds.loader.ItemRegistry;
 import net.minecraft.block.state.IBlockState;
@@ -32,6 +35,51 @@ public class UniversalPortalItemBlockItem extends ItemBlock {
         this.hasSubtypes = true;
         this.setCreativeTab(OUW.tab);
         this.setRegistryName(OUW.MODID, "universalportalitemblockitem");
+    }
+
+    public static boolean updatePortalBlock(World world, @Nullable EntityPlayer entityPlayer, BlockPos pos, ItemStack stack){
+        if (world.isRemote || ConfigHandler.alwaysToSpawn)
+            return false;
+
+        IBlockState state = world.getBlockState(pos);
+        if (state.getBlock().equals(ItemRegistry.portalBlock)) {
+            MinecraftServer minecraftserver = world.getMinecraftServer();
+
+            if (minecraftserver != null) {
+                NBTTagCompound tag = stack.getTagCompound();
+
+                if (tag == null)
+                    return false;
+
+                if (tag.getBoolean("NEW_DIM"))
+                    return true;
+
+                TileEntity te = world.getTileEntity(pos);
+
+                if (te == null)
+                    return false;
+
+                int[] retpos = tag.getIntArray("RETURNPOS");
+
+                int id = tag.getInteger("DIM_ID");
+
+                World w = DimensionManager.getWorld(id,true);
+                if (w == null) {
+                    if (!DimensionManager.isDimensionRegistered(id))
+                        return false;
+                    DimensionManager.initDimension(id);
+                    w = DimensionManager.getWorld(id, true);
+                }
+                TileEntity returnportal = w.getTileEntity(new BlockPos(retpos[0],retpos[1],retpos[2]));
+                if (!(returnportal instanceof UniversalTeleportTE))
+                    return false;
+                returnportal.getTileData().setIntArray("RETURNPOS",new int[]{pos.getX(),pos.getY(),pos.getZ()});
+
+                return true;
+            }
+        }
+        return false;
+
     }
 
     public static boolean setBlockNbt(World world, @Nullable EntityPlayer entityPlayer, BlockPos pos, ItemStack stack) {
@@ -73,7 +121,10 @@ public class UniversalPortalItemBlockItem extends ItemBlock {
 
     @Override
     public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, IBlockState newState) {
-        return super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState) && setBlockNbt(world, player, pos, stack);
+        boolean ret = super.placeBlockAt(stack, player, world, pos, side, hitX, hitY, hitZ, newState);
+        ret = ret && setBlockNbt(world, player, pos, stack);
+        ret = ret && updatePortalBlock(world, player, pos, stack);
+        return ret;
     }
 
     @Override
